@@ -16,14 +16,13 @@ public class RecordSpecification {
 
             var predicate = cb.conjunction();
 
-            // ✅ ALWAYS APPLY
-            predicate = cb.and(predicate,
-                    cb.equal(root.get("user").get("email"), userEmail));
+            //  ALWAYS APPLY
+
 
             predicate = cb.and(predicate,
                     cb.isFalse(root.get("isDeleted")));
 
-            // 🔥 VERY IMPORTANT: NULL SAFE
+            //  VERY IMPORTANT: NULL SAFE
             if (req != null) {
 
                 // DATE FILTER
@@ -48,7 +47,7 @@ public class RecordSpecification {
                     predicate = cb.and(predicate,
                             cb.equal(
                                     root.get("type"),
-                                    req.getType() // ✅ no .name()
+                                    req.getType() //  no .name()
                             ));
                 }
 
