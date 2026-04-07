@@ -18,13 +18,13 @@ public class DashboardService {
 
     private final FinancialRecordReposiotry financialRecordReposiotry;
 
-    // 🔥 GET CURRENT USER
+    //  GET CURRENT USER
     private String getCurrentUserEmail() {
         return SecurityContextHolder.getContext()
                 .getAuthentication().getName();
     }
 
-    // 🔥 COMMON METHOD (DRY PRINCIPLE)
+    // COMMON METHOD (DRY PRINCIPLE)
     private List<FinancialRecord> getFilteredRecords(DashBoardFilterRequest filter) {
 
         if (filter == null) {
@@ -83,7 +83,7 @@ public class DashboardService {
     }
 
     //  MONTHLY
-    @Cacheable(value = "monthly", key = "#filter.toString() + #root.target.getUser()")
+    @Cacheable(value = "monthly", key = "#filter.toString() + #root.target.getCurrentUserEmail()")
     public List<MonthlyResponse> getMonthlyTrends(DashBoardFilterRequest filter) {
 
         List<FinancialRecord> records = getFilteredRecords(filter);

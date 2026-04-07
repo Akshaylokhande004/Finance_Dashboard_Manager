@@ -65,27 +65,27 @@ public interface FinancialRecordReposiotry extends JpaRepository<FinancialRecord
     );
 
 
-    //  MONTHLY
-    @Query("""
-        SELECT new com.finance.dashbaord.reports.dto.MonthlyResponse(
-            FUNCTION('TO_CHAR', r.date, 'YYYY-MM'),
-            SUM(r.amount)
-        )
-        FROM FinancialRecord r
-        WHERE r.user.email = :email
-        AND r.isDeleted = false
-        AND (:startDate IS NULL OR r.date >= :startDate)
-        AND (:endDate IS NULL OR r.date <= :endDate)
-        AND (:type IS NULL OR r.type = :type)
-        AND (:category IS NULL OR r.category = :category)
-        GROUP BY FUNCTION('TO_CHAR', r.date, 'YYYY-MM')
-        ORDER BY FUNCTION('TO_CHAR', r.date, 'YYYY-MM')
-    """)
-    List<MonthlyResponse> getMonthly(
-            String email,
-            LocalDate startDate,
-            LocalDate endDate,
-            RecordType type,
-            String category
-    );
-    }
+//    //  MONTHLY
+//    @Query("""
+//        SELECT new com.finance.dashbaord.reports.dto.MonthlyResponse(
+//            FUNCTION('TO_CHAR', r.date, 'YYYY-MM'),
+//            SUM(r.amount)
+//        )
+//        FROM FinancialRecord r
+//        WHERE r.user.email = :email
+//        AND r.isDeleted = false
+//        AND (:startDate IS NULL OR r.date >= :startDate)
+//        AND (:endDate IS NULL OR r.date <= :endDate)
+//        AND (:type IS NULL OR r.type = :type)
+//        AND (:category IS NULL OR r.category = :category)
+//        GROUP BY FUNCTION('TO_CHAR', r.date, 'YYYY-MM')
+//        ORDER BY FUNCTION('TO_CHAR', r.date, 'YYYY-MM')
+//    """)
+//    List<MonthlyResponse> getMonthly(
+//            String email,
+//            LocalDate startDate,
+//            LocalDate endDate,
+//            RecordType type,
+//            String category
+//    );
+  }
