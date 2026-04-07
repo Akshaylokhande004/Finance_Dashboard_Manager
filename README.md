@@ -1,23 +1,23 @@
-#  Finance Dashboard Backend (Production-Ready)
+# 💰 Finance Dashboard Backend (Production-Ready)
 
-A **scalable, production-ready backend system** built using **Spring Boot** that provides secure financial record management and dynamic dashboard analytics.
-
----
-
-# Project Objective
-
-To design and implement a **robust backend system** that:
-
-* Handles financial records efficiently
-* Provides real-time analytics dashboards
-* Implements secure authentication & authorization
-* Follows clean architecture and SOLID principles
+A scalable and production-oriented backend system built using Spring Boot that enables secure financial record management along with dynamic, real-time analytics.
 
 ---
 
-#  High-Level Design (HLD)
+# 🚀 Project Objective
 
-##  Architecture Overview
+The goal of this project is to design a backend system that is not just functional, but also reflects real-world engineering practices:
+
+* Efficient handling of financial records
+* Secure authentication and authorization
+* Scalable analytics with optimized performance
+* Clean architecture following SOLID principles
+
+---
+
+# 🧠 High-Level Design (HLD)
+
+## Architecture Overview
 
 ```
 Client (Postman / Frontend)
@@ -28,194 +28,215 @@ Service Layer (Business Logic)
         ↓
 Repository Layer (Data Access)
         ↓
-Database (PostgreSQL)
+Database (PostgreSQL - Neon)
         ↓
 Cache Layer (Redis)
 ```
 
 ---
 
-##  Modules
+## Modules
 
-* **Auth Module**
+### 🔐 Auth Module
 
-  * User registration & login
-  * JWT-based authentication
+* User registration
+* Login with JWT token generation
 
-* **User Module**
+### 👤 User Module
 
-  * Role management (ADMIN / ANALYST / VIEWER)
+* Role management (ADMIN / ANALYST / VIEWER)
 
-* **Record Module**
+### 📦 Record Module
 
-  * CRUD operations
-  * Soft delete support
-  * Pagination
+* Create, update, delete financial records
+* Pagination support
+* Soft delete implementation
 
-* **Dashboard Module**
+### 📊 Dashboard Module
 
-  * Summary reports
-  * Category breakdown
-  * Monthly trends
-  * Dynamic filtering
-
----
-
-##  Security Flow
-
-```
-Login → Generate JWT → Client sends token → 
-JWT Filter validates → SecurityContext set → 
-RBAC applied via @PreAuthorize
-```
-
----
-
-#  Low-Level Design (LLD)
-
-##  Key Components
-
----
-
-### 1. Entity Layer
-
-* `User`
-* `FinancialRecord`
-* `AuditLog` (optional extension)
-
-**BaseEntity**
-
-* createdAt
-* updatedAt
-* soft delete flag
-
----
-
-### 2. DTO Layer
-
-* Request DTOs (input validation)
-* Response DTOs (clean API response)
-* Dashboard DTOs (analytics output)
-
----
-
-### 3. Repository Layer
-
-* JPA repositories
-* Custom queries for aggregation
-* Dynamic filtering support
-
----
-
-### 4. Service Layer
-
-* Business logic implementation
-* Security context usage
-* Aggregation handling
-* Cache integration
-
----
-
-### 5. Controller Layer
-
-* REST endpoints
-* Input validation
-* Response standardization
-
----
-
-# Dashboard Design
-
-## Features
-
-* Total Income & Expense
-* Category-wise breakdown
+* Summary analytics
+* Category breakdown
 * Monthly trends
 * Dynamic filtering
 
 ---
 
-##  Dynamic Filters
+# 🔐 Security Flow
 
-* Date range (startDate, endDate)
-* Transaction type (INCOME / EXPENSE)
-* Category
+```
+Login → Generate JWT → Attach token in request → 
+JWT Filter validates → SecurityContext set → 
+Access controlled via @PreAuthorize
+```
 
 ---
 
-##  Optimization Strategy
+# 🧩 Low-Level Design (LLD)
 
-###  Initial Approach
+## Core Layers
 
-* Fetch all records
+### Entity Layer
+
+* `User`
+* `FinancialRecord`
+* `AuditLog`
+
+### DTO Layer
+
+* Request DTOs → validation
+* Response DTOs → clean API output
+* Dashboard DTOs → analytics data
+
+### Service Layer
+
+* Business logic
+* Filtering & aggregation
+* Security context usage
+
+### Repository Layer
+
+* JPA repositories
+* Specification-based filtering
+
+### Controller Layer
+
+* REST endpoints
+* Standardized responses
+
+---
+
+# 📊 Dashboard Features
+
+* Total income vs expense
+* Category-wise spending
+* Monthly trends
+* Dynamic filters (date, type, category)
+
+---
+
+# ⚡ Optimization Strategy
+
+### Initial Approach
+
+* Fetch records
 * Aggregate in memory
 
 ### Optimized Approach
 
-* Database aggregation (GROUP BY, SUM)
-* Redis caching for repeated queries
+* Efficient DB queries
+* Redis caching for repeated dashboard calls
 
 ---
 
-# Authentication & Authorization
+# 🔐 Authentication & Authorization
 
-## JWT (JSON Web Token)
+## JWT
 
 * Stateless authentication
-* Token contains:
+* Token includes:
 
-  * user email
+  * email
   * role
 
----
+## RBAC
 
-## RBAC (Role-Based Access Control)
-
-| Role    | Permissions      |
-| ------- | ---------------- |
-| ADMIN   | Full access      |
-| ANALYST | Analytics access |
-| VIEWER  | Read-only        |
+| Role    | Access            |
+| ------- | ----------------- |
+| ADMIN   | Full access       |
+| ANALYST | View analytics    |
+| VIEWER  | Restricted access |
 
 ---
 
-## Enforcement
-
-* `@PreAuthorize` for endpoint protection
-* Security filter for token validation
+# 📡 API ENDPOINTS (IMPORTANT 🔥)
 
 ---
 
-#  Database Design
+## 🔐 Auth APIs
 
-##  Tables
+| Method | Endpoint             | Description     |
+| ------ | -------------------- | --------------- |
+| POST   | `/api/auth/register` | Register user   |
+| POST   | `/api/auth/login`    | Login & get JWT |
 
-### Users
+---
 
-* id
-* name
-* email
-* password
-* role
-* status
+## 📦 Record APIs
 
-### Financial Records
+| Method | Endpoint            | Access | Description             |
+| ------ | ------------------- | ------ | ----------------------- |
+| POST   | `/api/records`      | ADMIN  | Create record           |
+| GET    | `/api/records`      | ALL    | Get records (paginated) |
+| PUT    | `/api/records/{id}` | ADMIN  | Update record           |
+| DELETE | `/api/records/{id}` | ADMIN  | Soft delete record      |
 
-* id
-* amount
-* type
-* category
-* date
+---
+
+## 📊 Dashboard APIs
+
+| Method | Endpoint                  | Access   | Description        |
+| ------ | ------------------------- | -------- | ------------------ |
+| POST   | `/api/dashboard/summary`  | ANALYST+ | Income vs Expense  |
+| POST   | `/api/dashboard/category` | ANALYST+ | Category breakdown |
+| POST   | `/api/dashboard/monthly`  | ANALYST+ | Monthly trends     |
+
+---
+
+## 📜 Audit Logs
+
+| Method | Endpoint     | Access | Description          |
+| ------ | ------------ | ------ | -------------------- |
+| GET    | `/api/audit` | ADMIN  | View system activity |
+
+---
+
+# 🧠 Soft Delete (Important Design Decision)
+
+Instead of permanently deleting records, the system uses a **soft delete strategy**:
+
+```
+is_deleted = true
+```
+
+### Why this matters:
+
+* Prevents accidental data loss
+* Enables audit tracking
+* Allows future recovery
+* Matches real-world financial systems
+
+### How it works:
+
+* Records are never removed from DB
+* Queries always filter:
+
+```sql
+WHERE is_deleted = false
+```
+
+* Delete API simply updates flag instead of removing data
+
+---
+
+# 🗄️ Database Design
+
+## Users
+
+* id, name, email, password, role, status
+
+## Financial Records
+
+* id, amount, type, category, date
 * user_id (FK)
 * is_deleted
 
 ---
 
-##  Key Concepts
+## Key Concepts
 
-* Soft delete (`is_deleted`)
-* Foreign key relationship (User → Records)
-* Indexing on:
+* Soft delete
+* Foreign key relationships
+* Indexed fields:
 
   * user_id
   * date
@@ -223,26 +244,25 @@ RBAC applied via @PreAuthorize
 
 ---
 
-# Key Features Implemented
+# ⚙️ Key Features
 
-* ✅ JWT Authentication
-* ✅ RBAC Authorization
-* ✅ Financial Record CRUD
-* ✅ Soft Delete
-* ✅ Pagination
-* ✅ Global Exception Handling
-* ✅ Clean API Response Structure
-* ✅ Dynamic Dashboard Analytics
-* ✅ DB Aggregation Optimization
-* ✅ Redis Caching
+* JWT Authentication
+* RBAC Authorization
+* Financial Record CRUD
+* Soft Delete
+* Pagination
+* Global Exception Handling
+* Clean API Responses
+* Dashboard Analytics
+* Redis Caching
 
 ---
 
-#  Validation & Error Handling
+# 🧪 Validation & Error Handling
 
-* Global exception handler
-* Structured error responses
-* Validation for:
+* Centralized exception handler
+* Consistent error structure
+* Handles:
 
   * invalid input
   * missing data
@@ -250,70 +270,62 @@ RBAC applied via @PreAuthorize
 
 ---
 
-# SOLID Principles Applied
+# 🧠 SOLID Principles
 
-##  S — Single Responsibility
-
-* Each class has one responsibility
-  (Controller, Service, Repository separated)
-
-## O — Open/Closed
-
-* Easily extend filters and analytics without modifying core logic
-
-##  L — Liskov Substitution
-
-* Interfaces used for service abstraction
-
-##  I — Interface Segregation
-
-* DTOs separated for request/response
-
-## D — Dependency Inversion
-
-* Services depend on abstractions, not concrete classes
+* Single Responsibility → clear separation of layers
+* Open/Closed → easy to extend filters & reports
+* Liskov Substitution → abstraction via interfaces
+* Interface Segregation → DTO separation
+* Dependency Inversion → services depend on abstractions
 
 ---
 
-#  Performance Considerations
+# ⚡ Performance Considerations
 
-* Database-level aggregation instead of in-memory loops
-* Redis caching for repeated dashboard queries
-* Efficient indexing for faster filtering
-
----
-
-#  Trade-offs & Decisions
-
-| Decision         | Reason                |
-| ---------------- | --------------------- |
-| JWT over session | Stateless & scalable  |
-| Soft delete      | Data recovery + audit |
-| DB aggregation   | Performance           |
-| Redis caching    | Faster response time  |
-| DTO separation   | Clean API design      |
+* DB aggregation over in-memory loops
+* Redis caching for repeated queries
+* Indexed queries for fast filtering
 
 ---
 
-#  Future Improvements
+# ⚖️ Trade-offs
+
+| Decision       | Reason               |
+| -------------- | -------------------- |
+| JWT            | Stateless & scalable |
+| Soft delete    | Data safety          |
+| DB aggregation | Performance          |
+| Redis          | Faster analytics     |
+| DTO separation | Clean API            |
+
+---
+
+# 🚀 Future Improvements
 
 * Export reports (CSV / PDF)
-* Advanced analytics (charts, trends)
-* Multi-user dashboards
+* Advanced analytics
+* Multi-tenant system
 * Microservices architecture
-* Event-driven audit logging
+* Async audit logging
 
 ---
 
-#  Conclusion
+# 🧾 Setup Instructions
 
-This project demonstrates:
-
-* Clean backend architecture
-* Real-world security implementation
-* Scalable analytics system
-* Production-ready coding practices
+```
+1. Clone repository
+2. Configure DB in application.properties
+3. Run: mvn spring-boot:run
+4. Open Swagger:
+   http://localhost:8081/swagger-ui/index.html
+```
 
 ---
 
-**Status:**  Production-ready backend system
+# 🎯 Conclusion
+
+This project focuses on building a backend system that is not only functional but also scalable, secure, and aligned with real-world backend practices.
+
+---
+
+**Status:** ✅ Production-ready backend system
